@@ -1,19 +1,28 @@
-from fastapi import FastAPI, Query, Depends
-from sqlalchemy.orm import Session
-from database_operations import get_db 
-from model_operations import load_model
-from database import Data
-from traine import traine_model
+from fastapi import FastAPI, Query
+from traine import traine_model_async
 from predict import predict
 
 app = FastAPI()
 
 
-# Traine
+from traine import traine_model_async
+
 @app.get("/traine/")
-def traine_endpoint(db: Session = Depends(get_db)):
-    result = traine_model(db)
-    return result
+def traine_endpoint():
+    task_result = traine_model_async.apply_async()
+    return {"message": "Model training task started.", "task_id": task_result.id}
+
+
+@app.get("/traine_result/{task_id}")
+def traine_result(task_id: str):
+    result = traine_model_async.AsyncResult(task_id)
+    
+    if result.state == "SUCCESS":
+        return {"message": "Model trained and saved."}
+    elif result.state == "PENDING":
+        return {"message": "Task is still pending. Check back later."}
+    else:
+        return {"message": "An error occurred while training the model."}
 
 
 # Predict
