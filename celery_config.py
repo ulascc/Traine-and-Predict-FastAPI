@@ -7,3 +7,7 @@ app = Celery(
     include=["traine"]
 )
 
+app.conf.broker_connection_retry_on_startup = True
+
+CELERY_ACKS_LATE = True
+

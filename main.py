@@ -5,8 +5,6 @@ from predict import predict
 app = FastAPI()
 
 
-from traine import traine_model_async
-
 @app.get("/traine/")
 def traine_endpoint():
     task_result = traine_model_async.apply_async()

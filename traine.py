@@ -10,7 +10,7 @@ from celery_config import app as celery_app
 def traine_model_async():
     db = SessionLocal()
     text_list, label_list = fetch_data_for_training(db)
-
+    
     # Veriyi TF-IDF matrisine dönüştürme
     training, vectorizer = tfidf(text_list)
 
