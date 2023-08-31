@@ -1,10 +1,8 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from traine import traine_model_async
-from predict import predict
 import datetime
 
 app = FastAPI()
-
 
 @app.get("/traine/")
 def traine_endpoint():
@@ -25,8 +23,3 @@ def traine_result(task_id: str):
         return {"message": "An error occurred while training the model.", "task_id": task_id, "status" : "error"}
 
 
-# Predict
-@app.get("/predict/")
-def predict_endpoint(text: str = Query(...)):
-    result = predict(text)
-    return result
