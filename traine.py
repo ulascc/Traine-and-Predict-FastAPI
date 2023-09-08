@@ -2,12 +2,10 @@ from database_operations import fetch_data_for_training
 from model_operations import tfidf, test_SVM, dump_model
 from sklearn.model_selection import train_test_split
 from database import SessionLocal
-from celery_config import app as celery_app
 
 
-# Traine
-@celery_app.task()
-def traine_model_async():
+def traine_model():
+    
     db = SessionLocal()
     text_list, label_list = fetch_data_for_training(db)
     
@@ -23,5 +21,7 @@ def traine_model_async():
     # Eğitilmiş modeli ve vektörleme aracını kaydetme
     dump_model(model, 'model.pickle')
     dump_model(vectorizer, 'vectorizer.pickle')
+
+    db.close()
 
     return {"message": "Model trained and saved."}
